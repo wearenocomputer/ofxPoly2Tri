@@ -2,7 +2,7 @@
 //  ofxPoly2Tri.h
 //  poly2TriParticles
 //
-//  Created by Wim Vanhenden on 12/08/13.
+//  Created by Wim Vanhenden on 04/11/15.
 //
 //
 
@@ -13,7 +13,7 @@
 using namespace p2t;
 
 class ofxPoly2Tri {
-  
+    
 public:
     
     
@@ -24,6 +24,15 @@ public:
     
     ofMesh triangulatedMesh;
     
+    ofVboMesh vboMesh;
+    
+    bool       bUseVboMesh;
+    
+    ofPolyline currentline;
+    
+    float scalex;
+    float scaley;
+    
     
 private:
     
@@ -31,5 +40,7 @@ private:
     vector<ofPoint>    steinerpoints;
     
     void doTriangulation(vector<p2t::Point*> bound);
+    
+    
     
 };
