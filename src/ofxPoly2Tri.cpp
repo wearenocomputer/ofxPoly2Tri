@@ -27,6 +27,10 @@ void ofxPoly2Tri::triangulate(ofPolyline bounds) {
         bound.push_back(new p2t::Point(edgepoints[i].x,edgepoints[i].y));
     }
     doTriangulation(bound);
+    //clear the vector again
+    for (vector<p2t::Point*>::iterator it = bound.begin(); it != bound.end(); ++it) {
+        delete *it;
+    }
 }
 
 void ofxPoly2Tri::triangulate(ofMesh bounds) {
@@ -36,6 +40,10 @@ void ofxPoly2Tri::triangulate(ofMesh bounds) {
         bound.push_back(new p2t::Point(edgepoints[i].x,edgepoints[i].y));
     }
     doTriangulation(bound);
+    //clear the vector again
+    for (vector<p2t::Point*>::iterator it = bound.begin(); it != bound.end(); ++it) {
+        delete *it;
+    }
 }
 
 
@@ -46,14 +54,17 @@ void ofxPoly2Tri::triangulate(ofMesh bounds) {
 void ofxPoly2Tri::doTriangulation(vector<p2t::Point*> bound) {
     CDT *cdt = new CDT(bound);
     
+    vector<p2t::Point*> cdtPoints;
     if (steinerpoints.size()>0) {
         //ADD POINTS
         for (int i=0;i<steinerpoints.size();++i) {
             p2t::Point *point = new p2t::Point(steinerpoints[i].x,steinerpoints[i].y);
+            cdtPoints.push_back(point);
             cdt->AddPoint(point);
         }
     }
     
+    vector<p2t::Point*> cdtHolePoints;
     if (holes.size()>0) {
         //ADD HOLES
         for (int i=0;i<holes.size();++i) {
@@ -62,6 +73,7 @@ void ofxPoly2Tri::doTriangulation(vector<p2t::Point*> bound) {
             for (int i=0;i<holepoints.size();++i) {
                 p2t::Point *p = new p2t::Point();
                 p->set(holepoints[i].x, holepoints[i].y);
+                cdtHolePoints.push_back(p);
                 hole.push_back(p);
             }
             cdt->AddHole(hole);
@@ -154,6 +166,15 @@ void ofxPoly2Tri::doTriangulation(vector<p2t::Point*> bound) {
         
         
     }
+
+    //free the memory again
+    for (vector<p2t::Point*>::iterator it = cdtPoints.begin(); it != cdtPoints.end(); ++it) {
+        delete *it;
+    }
+    for (vector<p2t::Point*>::iterator it = cdtHolePoints.begin(); it != cdtHolePoints.end(); ++it) {
+        delete *it;
+    }
+
     delete cdt;
     cdt=NULL;
 }
